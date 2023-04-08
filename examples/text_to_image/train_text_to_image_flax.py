@@ -267,8 +267,8 @@ def main():
         # Downloading and loading a dataset from the hub.
         dataset = load_dataset(
             args.dataset_name,
-            #args.dataset_config_name,
-            split = "train", use_auth_token=True,
+            args.dataset_config_name,
+            #split = "train", use_auth_token=True,
             cache_dir=args.cache_dir,
             
         )
@@ -336,7 +336,7 @@ def main():
     )
 
     def preprocess_train(examples):
-        images = [image.convert("RGB") for image in examples[image_column]]
+        images = [image.frombytes('RGB', (arg.resolution,arg.resolution)).convert("RGB") for image in examples[image_column]]
         examples["pixel_values"] = [train_transforms(image) for image in images]
         examples["input_ids"] = tokenize_captions(examples)
 

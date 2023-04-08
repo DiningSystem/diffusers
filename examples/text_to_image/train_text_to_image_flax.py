@@ -19,6 +19,8 @@ from flax.training.common_utils import shard
 from huggingface_hub import create_repo, upload_folder
 from torchvision import transforms
 from tqdm.auto import tqdm
+from PIL import Image
+import io
 from transformers import CLIPImageProcessor, CLIPTokenizer, FlaxCLIPTextModel, set_seed
 
 from diffusers import (
@@ -336,7 +338,7 @@ def main():
     )
 
     def preprocess_train(examples):
-        images = [image.frombytes('RGB', (arg.resolution,arg.resolution)).convert("RGB") for image in examples[image_column]]
+        images = [Image.open(io.BytesIO(image)).convert("RGB") for image in examples[image_column]]
         examples["pixel_values"] = [train_transforms(image) for image in images]
         examples["input_ids"] = tokenize_captions(examples)
 

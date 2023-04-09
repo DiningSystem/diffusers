@@ -21,6 +21,8 @@ from torchvision import transforms
 from tqdm.auto import tqdm
 from PIL import Image
 import io
+from io import BytesIO
+import base64
 from transformers import CLIPImageProcessor, CLIPTokenizer, FlaxCLIPTextModel, set_seed
 
 from diffusers import (
@@ -338,8 +340,8 @@ def main():
     )
 
     def preprocess_train(examples):
-        #images = [Image.open(io.BytesIO(image.read())).convert("RGB") for image in examples[image_column]]
-        images = [Image.frombytes('RGB', (args.resolution, args.resolution), image, "raw") for image in examples[image_column]]
+        images = [Image.open(BytesIO(base64.b64decode(image))).convert("RGB") for image in examples[image_column]]
+        #images = [Image.frombytes('RGB', (args.resolution, args.resolution), image, "raw") for image in examples[image_column]]
         Image.frombytes('RGB', (jpg_image_width, jpg_image_height), buffered_image)
         examples["pixel_values"] = [train_transforms(image) for image in images]
         examples["input_ids"] = tokenize_captions(examples)

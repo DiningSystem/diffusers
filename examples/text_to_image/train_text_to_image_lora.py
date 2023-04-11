@@ -688,7 +688,8 @@ def main():
     # Only show the progress bar once on each machine.
     progress_bar = tqdm(range(global_step, args.max_train_steps), disable=not accelerator.is_local_main_process)
     progress_bar.set_description("Steps")
-
+    
+    images = []
     for epoch in range(first_epoch, args.num_train_epochs):
         unet.train()
         train_loss = 0.0
@@ -786,7 +787,7 @@ def main():
 
                 # run inference
                 generator = torch.Generator(device=accelerator.device).manual_seed(args.seed)
-                images = []
+                #images = []
                 for _ in range(args.num_validation_images):
                     images.append(
                         pipeline(args.validation_prompt, num_inference_steps=30, generator=generator).images[0]

@@ -847,7 +847,7 @@ def main():
                 ignore_patterns=["step_*", "epoch_*"],
             )'''
             repo.push_to_hub(commit_message="End of training", blocking=False)
-
+'''
     # Final inference
     # Load previous pipeline
     pipeline = DiffusionPipeline.from_pretrained(
@@ -878,7 +878,7 @@ def main():
                         ]
                     }
                 )
-
+'''
     accelerator.end_training()
 
 

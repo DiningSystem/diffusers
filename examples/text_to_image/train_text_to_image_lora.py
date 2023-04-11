@@ -846,7 +846,7 @@ def main():
                 commit_message="End of training",
                 ignore_patterns=["step_*", "epoch_*"],
             )'''
-            repo.push_to_hub(commit_message=f"Epoch {epoch}", blocking=False)
+            repo.push_to_hub(commit_message="End of training", blocking=False)
 
     # Final inference
     # Load previous pipeline

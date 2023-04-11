@@ -20,6 +20,7 @@ import math
 import os
 import random
 from pathlib import Path
+from typing import Optional
 
 import datasets
 import numpy as np

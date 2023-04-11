@@ -817,13 +817,14 @@ def main():
         unet.save_attn_procs(args.output_dir)
 
         if args.push_to_hub:
+            '''
             save_model_card(
                 repo_id,
                 images=images,
                 base_model=args.pretrained_model_name_or_path,
                 dataset_name=args.dataset_name,
                 repo_folder=args.output_dir,
-            )
+            )'''
             upload_folder(
                 repo_id=repo_id,
                 folder_path=args.output_dir,

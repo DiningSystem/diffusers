@@ -4,6 +4,7 @@ import math
 import os
 import random
 from pathlib import Path
+from typing import Optional
 
 import jax
 import jax.numpy as jnp
@@ -16,7 +17,7 @@ from datasets import load_dataset
 from flax import jax_utils
 from flax.training import train_state
 from flax.training.common_utils import shard
-from huggingface_hub import create_repo, upload_folder
+from huggingface_hub import create_repo, upload_folder, HfFolder, Repository, create_repo, whoami
 from torchvision import transforms
 from tqdm.auto import tqdm
 from PIL import Image
@@ -233,6 +234,14 @@ dataset_name_mapping = {
 def get_params_to_save(params):
     return jax.device_get(jax.tree_util.tree_map(lambda x: x[0], params))
 
+def get_full_repo_name(model_id: str, organization: Optional[str] = None, token: Optional[str] = None):
+    if token is None:
+        token = HfFolder.get_token()
+    if organization is None:
+        username = whoami(token)["name"]
+        return f"{username}/{model_id}"
+    else:
+        return f"{organization}/{model_id}"
 
 def main():
     args = parse_args()
@@ -257,10 +266,19 @@ def main():
         if args.output_dir is not None:
             os.makedirs(args.output_dir, exist_ok=True)
 
+        #if args.push_to_hub:
+         #   repo_id = create_repo(
+          #      repo_id=args.hub_model_id or Path(args.output_dir).name, exist_ok=True, token=args.hub_token
+           # ).repo_id
         if args.push_to_hub:
-            repo_id = create_repo(
-                repo_id=args.hub_model_id or Path(args.output_dir).name, exist_ok=True, token=args.hub_token
-            ).repo_id
+            #repo_id = create_repo(
+             #   repo_id=args.hub_model_id or Path(args.output_dir).name, exist_ok=True, token=args.hub_token).repo_id
+            if args.hub_model_id is None:
+                repo_name = get_full_repo_name(Path(args.output_dir).name, token=args.hub_token)
+            else:
+                repo_name = args.hub_model_id
+            create_repo(repo_name, exist_ok=True, token=args.hub_token)
+            repo = Repository(args.output_dir, clone_from=repo_name, token=args.hub_token)
 
     # Get the datasets: you can either provide your own training and evaluation files (see below)
     # or specify a Dataset from the hub (the dataset will be downloaded automatically from the datasets Hub).
@@ -570,12 +588,13 @@ def main():
         )
 
         if args.push_to_hub:
-            upload_folder(
-                repo_id=repo_id,
-                folder_path=args.output_dir,
-                commit_message="End of training",
-                ignore_patterns=["step_*", "epoch_*"],
-            )
+            #upload_folder(
+                #repo_id=repo_id,
+               # folder_path=args.output_dir,
+              #  commit_message="End of training",
+             #   ignore_patterns=["step_*", "epoch_*"],
+            #)
+            repo.push_to_hub(commit_message="End of training", blocking=False)
 
 
 if __name__ == "__main__":

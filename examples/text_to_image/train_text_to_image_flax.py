@@ -595,7 +595,7 @@ def main():
              #   ignore_patterns=["step_*", "epoch_*"],
             #)
             #repo.push_to_hub(commit_message="End of training", blocking=False)
-            api.upload_folder(folder_path="./hair_tpu", repo_id="DiningSystem/hair_tpu", repo_type="model")
+            api.upload_folder(folder_path="./hair_tpu", repo_id="DiningSystem/hair_tpu", repo_type="model", token=args.hub_token)
 
 
 if __name__ == "__main__":

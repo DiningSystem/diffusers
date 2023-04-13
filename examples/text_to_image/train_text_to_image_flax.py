@@ -17,7 +17,7 @@ from datasets import load_dataset
 from flax import jax_utils
 from flax.training import train_state
 from flax.training.common_utils import shard
-from huggingface_hub import create_repo, upload_folder, HfFolder, Repository, create_repo, whoami
+from huggingface_hub import create_repo, upload_folder, HfFolder, Repository, create_repo, whoami, HfApi
 from torchvision import transforms
 from tqdm.auto import tqdm
 from PIL import Image
@@ -42,7 +42,7 @@ check_min_version("0.15.0.dev0")
 
 logger = logging.getLogger(__name__)
 
-
+api = HfApi()
 def parse_args():
     parser = argparse.ArgumentParser(description="Simple example of a training script.")
     parser.add_argument(
@@ -594,7 +594,8 @@ def main():
               #  commit_message="End of training",
              #   ignore_patterns=["step_*", "epoch_*"],
             #)
-            repo.push_to_hub(commit_message="End of training", blocking=False)
+            #repo.push_to_hub(commit_message="End of training", blocking=False)
+            api.upload_folder(folder_path="./hair_tpu", repo_id="DiningSystem/hair_tpu", repo_type="model")
 
 
 if __name__ == "__main__":

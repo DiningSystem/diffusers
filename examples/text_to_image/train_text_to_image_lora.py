@@ -693,7 +693,7 @@ def main():
         else:
             accelerator.print(f"Resuming from checkpoint {path}")
             #accelerator.load_state(os.path.join(args.output_dir, path))
-            accelerator.load_state(os.path.join("/kaggle/input/stability2hair/diffusers/hair_model", path))
+            accelerator.load_state(os.path.join("/kaggle/input/stability2-con/diffusers/hair_model", path))
             global_step = int(path.split("-")[1])
 
             resume_global_step = global_step * args.gradient_accumulation_steps

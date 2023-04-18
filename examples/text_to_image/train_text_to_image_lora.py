@@ -693,7 +693,7 @@ def main():
         else:
             accelerator.print(f"Resuming from checkpoint {path}")
             #accelerator.load_state(os.path.join(args.output_dir, path))
-            accelerator.load_state(os.path.join('CVH-vn1210/hair-model', path))
+            accelerator.load_state(os.path.join('./hair-model', path))
             global_step = int(path.split("-")[1])
 
             resume_global_step = global_step * args.gradient_accumulation_steps
